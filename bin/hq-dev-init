@@ -45,7 +45,7 @@ if File.exist? ".gitignore"
 	puts "not touching .gitignore"
 else
 	puts "creating .gitignore"
-	FileUtils.copy_entry "#{DEV_DIR}/templates/gemfile", ".gitignore"
+	FileUtils.copy_entry "#{DEV_DIR}/templates/gitignore", ".gitignore"
 end
 
 if File.exist? ".travis.yml"

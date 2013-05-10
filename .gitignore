@@ -1,2 +1,6 @@
-source "https://rubygems.org"
-gemspec
+/.bundle
+/.gems
+/.stubs
+/results
+/test-configs
+/*.gem
