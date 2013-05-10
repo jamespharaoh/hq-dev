@@ -1,0 +1,4 @@
+lib/**/*.rb
+data/**/*
+defaults/**/*
+templates/**/*

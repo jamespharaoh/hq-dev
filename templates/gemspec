@@ -71,6 +71,8 @@ Gem::Specification.new do
 			Dir.new("bin").entries - [ ".", ".." ]
 	end
 
+	Dir.mkdir "lib" unless Dir.exist? "lib"
+
 	spec.require_paths = Dir[
 		"lib",
 	]
