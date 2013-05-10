@@ -1,0 +1,7 @@
+cucumber
+hq-dev
+json
+rake
+rspec
+rspec_junit_formatter
+simplecov

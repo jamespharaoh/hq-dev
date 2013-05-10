@@ -1,0 +1,119 @@
+#!/usr/bin/env ruby
+
+require "fileutils"
+
+PROJECT = File.basename(Dir.pwd)
+DEV_DIR = File.expand_path "../..", __FILE__
+
+def shell cmd
+	success = system cmd
+	exit 1 unless success
+end
+
+def write_file name, lines
+
+	File.open name, "w" do
+		|file_io|
+
+		lines.each do
+			|line|
+
+			file_io.puts line
+
+		end
+
+	end
+
+end
+
+gem_versions = Hash[
+	File.new("#{DEV_DIR}/data/gem-versions")
+		.to_a
+		.map { |line| line.split " " }
+]
+
+puts "creating Rakefile"
+FileUtils.copy_entry "#{DEV_DIR}/templates/rakefile", "Rakefile"
+
+puts "creating #{PROJECT}.gemspec"
+FileUtils.copy_entry "#{DEV_DIR}/templates/gemspec", "#{PROJECT}.gemspec"
+
+puts "creating Gemfile"
+FileUtils.copy_entry "#{DEV_DIR}/templates/gemfile", "Gemfile"
+
+if File.exist? ".gitignore"
+	puts "not touching .gitignore"
+else
+	puts "creating .gitignore"
+	FileUtils.copy_entry "#{DEV_DIR}/templates/gemfile", ".gitignore"
+end
+
+if File.exist? ".travis.yml"
+	puts "not touching .travis.yml"
+else
+	puts "creating .travis.yml"
+	FileUtils.copy_entry "#{DEV_DIR}/templates/travis", ".travis.yml"
+end
+
+unless Dir.exist? ".hq-dev"
+	puts "creating .hq-dev"
+	FileUtils.mkdir ".hq-dev"
+end
+
+puts "creating .hq-dev/name"
+write_file ".hq-dev/name", [ PROJECT ]
+
+if File.exist? ".hq-dev/dependencies"
+	puts "not touching .hq-dev/dependencies"
+else
+	puts "creating .hq-dev/dependencies"
+	write_file ".hq-dev/dependencies", []
+end
+
+if File.exist? ".hq-dev/development-dependencies"
+
+	puts "not touching .hq-dev/development-dependencies"
+
+else
+
+	puts "creating .hq-dev/development-dependencies"
+
+	default_development_dependencies =
+		File.new("#{DEV_DIR}/data/default-development-dependencies")
+			.to_a
+			.map { |line| line.strip }
+			.map {
+				|name|
+
+				raise "no version for gem #{name}" \
+					unless gem_versions[name]
+
+				"#{name} #{gem_versions[name]}"
+
+			}
+
+	write_file \
+		".hq-dev/development-dependencies",
+		default_development_dependencies
+
+end
+
+found_problem = false
+
+if File.exist? ".hq-dev/full-name"
+	puts "not touching .hq-dev/full-name"
+else
+	puts "PLEASE CREATE: .hq-dev/full-name"
+	found_problem = true
+end
+
+if File.exist? ".hq-dev/description"
+	puts "not touching .hq-dev/description"
+else
+	puts "PLEASE CREATE: .hq-dev/description"
+	found_problem = true
+end
+
+unless found_problem
+	puts "done!"
+end

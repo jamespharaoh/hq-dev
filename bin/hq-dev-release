@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+project = File.basename(Dir.pwd)
+ver = ARGV[0]
+
+def shell cmd
+	success = system cmd
+	exit 1 unless success
+end
+
+# TODO check the workspace is clean
+
+puts ""
+puts "running tests"
+shell "bundle exec rake"
+
+puts ""
+puts "bumping version number"
+shell "echo #{ver} > .hq-dev/version"
+
+puts ""
+puts "running bundle update"
+shell "bundle update"
+
+puts ""
+puts "committing changes"
+shell "git add -A"
+shell "git diff --cached"
+sleep 2
+shell "git commit -m 'bump version number to #{ver}'"
+
+puts ""
+puts "pushing to github"
+shell "git tag #{ver}"
+shell "git push origin master #{ver}"
+
+puts ""
+puts "pushing to rubygems"
+shell "gem build #{project}.gemspec"
+shell "gem push #{project}-#{ver}.gem"
+
+puts ""
+puts "done!"
+puts ""
