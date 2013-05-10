@@ -27,6 +27,8 @@ $hq_project_full =
 $hq_project_desc =
 	HQ.project_param "description"
 
+Dir.mkdir "lib" unless Dir.exist? "lib"
+
 Gem::Specification.new do
 	|spec|
 
@@ -70,8 +72,6 @@ Gem::Specification.new do
 		spec.executables =
 			Dir.new("bin").entries - [ ".", ".." ]
 	end
-
-	Dir.mkdir "lib" unless Dir.exist? "lib"
 
 	spec.require_paths = Dir[
 		"lib",
