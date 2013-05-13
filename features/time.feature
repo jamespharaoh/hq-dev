@@ -54,3 +54,22 @@ Feature: Time manipulation
       1 scenario (1 passed)
       2 steps (2 passed)
       """
+
+  Scenario: Override with ymd hms
+
+    Given a file "features/test.feature":
+      """
+      Feature:
+        Scenario:
+          Given the time is 1970-01-02 10:17:36
+          Then the time should be 123456
+      """
+
+    When I run "cucumber"
+
+    Then the exit status should be 0
+    And the output should contain:
+      """
+      1 scenario (1 passed)
+      2 steps (2 passed)
+      """

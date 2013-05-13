@@ -1,4 +1,5 @@
-require 'cucumber/rspec/doubles'
+require "cucumber/rspec/doubles"
+require "time"
 
 Before do
 
@@ -21,10 +22,10 @@ Given /^the time is (.+)$/ do
 
 	case time_str
 
-#		when /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
+		when /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})$/
 
-#			@time_override =
-#				Time.parse time_str
+			@time_override =
+				Time.parse "#{$1}T#{$2}Z"
 
 		when /^(\d+)$/
 
