@@ -16,3 +16,15 @@ After do
 	Dir.chdir @old_dir
 
 end
+
+Given /^a file "(.*?)":$/ do
+	|file_name, file_contents|
+
+	File.open file_name, "w" do
+		|file_io|
+
+		file_io.write file_contents
+
+	end
+
+end
