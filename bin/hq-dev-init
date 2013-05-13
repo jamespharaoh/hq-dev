@@ -66,11 +66,47 @@ def copy_overwrite from, to
 
 end
 
-gem_versions = Hash[
-	File.new("#{DEV_DIR}/data/gem-versions")
-		.to_a
-		.map { |line| line.split " " }
-]
+def read_hash name
+
+	return Hash[
+		File.new(name)
+			.to_a
+			.map { |line| line.split " " }
+	]
+
+end
+
+def write_hash name, hash
+
+	File.open name, "w" do
+		|file_io|
+
+		hash.each do
+			|key, value|
+
+			file_io.write "%s %s\n" % [ key, value ]
+
+		end
+
+	end
+
+end
+
+def update_gem_versions path
+	puts "updating versions in #{path}"
+	write_hash path, Hash[
+		read_hash(path)
+			.map {
+				|name, version|
+				raise "no version for gem #{name}" \
+					unless $gem_versions[name]
+				[ name, $gem_versions[name] ]
+			}
+	]
+end
+
+$gem_versions =
+	read_hash "#{DEV_DIR}/data/gem-versions"
 
 copy_overwrite "templates/rakefile", "Rakefile"
 copy_overwrite "templates/gemspec", "#{PROJECT}.gemspec"
@@ -88,14 +124,14 @@ puts "creating .hq-dev/name"
 write_file ".hq-dev/name", [ PROJECT ]
 
 if File.exist? ".hq-dev/dependencies"
-	puts "not touching .hq-dev/dependencies"
+	update_gem_versions ".hq-dev/dependencies"
 else
 	puts "creating .hq-dev/dependencies"
 	write_file ".hq-dev/dependencies", []
 end
 
 if File.exist? ".hq-dev/development-dependencies"
-	puts "not touching .hq-dev/development-dependencies"
+	update_gem_versions ".hq-dev/development-dependencies"
 else
 	puts "creating .hq-dev/development-dependencies"
 	default_development_dependencies =
@@ -105,8 +141,8 @@ else
 			.map {
 				|name|
 				raise "no version for gem #{name}" \
-					unless gem_versions[name]
-				"#{name} #{gem_versions[name]}"
+					unless $gem_versions[name]
+				"#{name} #{$gem_versions[name]}"
 			}
 	write_file \
 		".hq-dev/development-dependencies",
