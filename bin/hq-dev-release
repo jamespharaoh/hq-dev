@@ -17,6 +17,21 @@ shell "bundle exec rake"
 puts ""
 puts "bumping version number"
 shell "echo #{ver} > .hq-dev/version"
+if File.exist? "data/gem-versions"
+	File.open "data/gem-versions.new", "w" do
+		|file_io|
+		File.new("data/gem-versions").each do
+			|line|
+			line_name, line_ver = line.strip.split " "
+			if line_name == "hq-dev"
+				file_io.write "#{line_name} #{ver}\n"
+			else
+				file_io.write "#{line_name} #{line_ver}\n"
+			end
+		end
+	end
+	FileUtils.mv "data/gem-versions.new", "data/gem-versions"
+end
 
 puts ""
 puts "running bundle update"
