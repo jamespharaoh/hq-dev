@@ -6,14 +6,14 @@ When /^I run "(.*?)"$/ do
 
 end
 
-Then /^the exit status is (\d+)$/ do
+Then /^the exit status should be (\d+)$/ do
 	|exit_status_str|
 
 	@command_exit_status.should == exit_status_str.to_i
 
 end
 
-Then /^the output contains:$/ do
+Then /^the output should contain:$/ do
 	|string|
 
 	@command_output.should include string

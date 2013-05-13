@@ -25,8 +25,8 @@ Feature: Temporary directory and files
 
     When I run "cucumber"
 
-    Then the exit status is 0
-    And the output contains:
+    Then the exit status should be 0
+    And the output should contain:
       """
       1 scenario (1 passed)
       2 steps (2 passed)
