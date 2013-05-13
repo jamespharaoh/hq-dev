@@ -99,7 +99,7 @@ if File.exist? ".hq-dev/development-dependencies"
 else
 	puts "creating .hq-dev/development-dependencies"
 	default_development_dependencies =
-		File.new("#{DEV_DIR}/data/default-development-dependencies")
+		File.new("#{DEV_DIR}/defaults/development-dependencies")
 			.to_a
 			.map { |line| line.strip }
 			.map {
