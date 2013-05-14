@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require "fileutils"
+
 project = File.basename(Dir.pwd)
 ver = ARGV[0]
 
