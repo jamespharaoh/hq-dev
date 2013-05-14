@@ -18,7 +18,7 @@ After do
 
 end
 
-Given /^a file "(.*?)":$/ do
+Given /^a file "(.+)":$/ do
 	|file_name, file_contents|
 
 	dir_name = File.dirname file_name
@@ -31,5 +31,12 @@ Given /^a file "(.*?)":$/ do
 		file_io.write file_contents
 
 	end
+
+end
+
+Given /^a directory "(.+)"$/ do
+	|dir_name|
+
+	Dir.mkdir dir_name
 
 end

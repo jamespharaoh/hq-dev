@@ -1,17 +1,21 @@
 Feature: Temporary directory and files
 
-  Scenario:
+  Background:
 
     Given a file "features/support/env.rb":
       """
       require "hq/cucumber/temp-dir"
       """
+
+  Scenario: Create a file
+
     Given a file "features/support/steps.rb":
       """
       Then /^the file is created correctly$/ do
         File.read("abc.def").should == "Hello world"
       end
       """
+
     And a file "features/test.feature":
       """
       Feature:
@@ -30,4 +34,35 @@ Feature: Temporary directory and files
       """
       1 scenario (1 passed)
       2 steps (2 passed)
+      """
+
+  Scenario: Create a directory
+
+    Given a file "features/support/steps.rb":
+      """
+      Then /^the directory exists$/ do
+        Dir.exist?("some-dir").should be_true
+      end
+      Then /^the directory does not exist$/ do
+        Dir.exist?("some-dir").should be_false
+      end
+      """
+
+    And a file "features/test.feature":
+      """
+      Feature:
+        Scenario: Create dir
+          Given a directory "some-dir"
+          Then the directory exists
+        Scenario: Remove between runs
+          Then the directory does not exist
+      """
+
+    When I run "cucumber"
+
+    Then the exit status should be 0
+    And the output should contain:
+      """
+      2 scenarios (2 passed)
+      3 steps (3 passed)
       """
