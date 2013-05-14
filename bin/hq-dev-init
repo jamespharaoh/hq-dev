@@ -115,25 +115,30 @@ copy_overwrite "templates/gemfile", "Gemfile"
 copy_if_not_exists "templates/gitignore", ".gitignore"
 copy_if_not_exists "templates/travis", ".travis.yml"
 
-unless Dir.exist? ".hq-dev"
-	puts "creating .hq-dev"
-	FileUtils.mkdir ".hq-dev"
+unless Dir.exist? "etc"
+	puts "creating etc"
+	FileUtils.mkdir "etc"
 end
 
-puts "creating .hq-dev/name"
-write_file ".hq-dev/name", [ PROJECT ]
-
-if File.exist? ".hq-dev/dependencies"
-	update_gem_versions ".hq-dev/dependencies"
-else
-	puts "creating .hq-dev/dependencies"
-	write_file ".hq-dev/dependencies", []
+unless Dir.exist? "etc/hq-dev"
+	puts "creating etc/hq-dev"
+	FileUtils.mkdir "etc/hq-dev"
 end
 
-if File.exist? ".hq-dev/development-dependencies"
-	update_gem_versions ".hq-dev/development-dependencies"
+puts "creating etc/hq-dev/name"
+write_file "etc/hq-dev/name", [ PROJECT ]
+
+if File.exist? "etc/hq-dev/dependencies"
+	update_gem_versions "etc/hq-dev/dependencies"
 else
-	puts "creating .hq-dev/development-dependencies"
+	puts "creating etc/hq-dev/dependencies"
+	write_file "etc/hq-dev/dependencies", []
+end
+
+if File.exist? "etc/hq-dev/development-dependencies"
+	update_gem_versions "etc/hq-dev/development-dependencies"
+else
+	puts "creating etc/hq-dev/development-dependencies"
 	default_development_dependencies =
 		File.new("#{DEV_DIR}/defaults/development-dependencies")
 			.to_a
@@ -145,17 +150,17 @@ else
 				"#{name} #{$gem_versions[name]}"
 			}
 	write_file \
-		".hq-dev/development-dependencies",
+		"etc/hq-dev/development-dependencies",
 		default_development_dependencies
 end
 
 found_problem = false
 
-warn_if_not_exists ".hq-dev/description"
-warn_if_not_exists ".hq-dev/full-name"
+warn_if_not_exists "etc/hq-dev/description"
+warn_if_not_exists "etc/hq-dev/full-name"
 
-copy_if_not_exists "defaults/files", ".hq-dev/files"
-copy_if_not_exists "defaults/test-files", ".hq-dev/test-files"
+copy_if_not_exists "defaults/files", "etc/hq-dev/files"
+copy_if_not_exists "defaults/test-files", "etc/hq-dev/test-files"
 
 unless found_problem
 	puts "done!"

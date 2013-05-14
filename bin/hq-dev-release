@@ -16,7 +16,7 @@ shell "bundle exec rake"
 
 puts ""
 puts "bumping version number"
-shell "echo #{ver} > .hq-dev/version"
+shell "echo #{ver} > etc/hq-dev/version"
 if File.exist? "data/gem-versions"
 	File.open "data/gem-versions.new", "w" do
 		|file_io|
