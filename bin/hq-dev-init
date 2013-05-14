@@ -111,6 +111,7 @@ $gem_versions =
 copy_overwrite "templates/rakefile", "Rakefile"
 copy_overwrite "templates/gemspec", "#{PROJECT}.gemspec"
 copy_overwrite "templates/gemfile", "Gemfile"
+copy_overwrite "templates/licence", "LICENCE"
 
 copy_if_not_exists "templates/gitignore", ".gitignore"
 copy_if_not_exists "templates/travis", ".travis.yml"
