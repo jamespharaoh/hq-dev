@@ -18,16 +18,9 @@ Feature: Command invocation
       $commands["command"] = CommandScript
       """
 
-  Scenario: Invoke a script and check the output
+  Scenario: Invoke a script with an args file
 
-    Given a file "features/support/steps.rb":
-      """
-      Then /^the file is created correctly$/ do
-        File.read("abc.def").should == "Hello world"
-      end
-      """
-
-    And a file "features/test.feature":
+    Given a file "features/test.feature":
       """
       Feature:
         Scenario: Invoke script
@@ -44,6 +37,39 @@ Feature: Command invocation
           And the command stderr should be:
             \"\"\"
             standard error
+            \"\"\"
+          And the command exit status should be 123
+      """
+
+    When I run "cucumber"
+
+    Then the output should contain:
+      """
+      1 scenario (1 passed)
+      5 steps (5 passed)
+      """
+    And the exit status should be 0
+
+  Scenario: Execute a shell command
+
+    Given a file "features/test.feature":
+      """
+      Feature:
+        Scenario: Run script
+          Given a file "command":
+            \"\"\"
+            echo hello standard output
+            echo hello standard error >&2
+            exit 123
+            \"\"\"
+          When I run "bash command"
+          Then the command stdout should be:
+            \"\"\"
+            hello standard output
+            \"\"\"
+          And the command stderr should be:
+            \"\"\"
+            hello standard error
             \"\"\"
           And the command exit status should be 123
       """

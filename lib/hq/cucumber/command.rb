@@ -1,4 +1,5 @@
 require "shellwords"
+require "tempfile"
 
 $commands = {}
 
@@ -19,6 +20,34 @@ When /^I invoke (\S+) with "([^"]+)"$/ do
 	@command_exit_status = script.status
 	@command_stdout = script.stdout.string
 	@command_stderr = script.stderr.string
+
+end
+
+When /^I run "([^"]+)"$/ do
+	|command_str|
+
+	stdout_temp =
+		Tempfile.new "cuke-command-stdout-"
+
+	stderr_temp =
+		Tempfile.new "cuke-command-stderr-"
+
+	system "(%s) >%s 2>%s" % [
+		command_str,
+		stdout_temp.path,
+		stderr_temp.path,
+	]
+
+	@command_exit_status = $?.exitstatus
+
+	@command_stdout =
+		File.read stdout_temp.path
+
+	@command_stderr =
+		File.read stderr_temp.path
+
+	stdout_temp.unlink
+	stderr_temp.unlink
 
 end
 
