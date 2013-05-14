@@ -8,6 +8,8 @@ Before do
 
 	Dir.chdir @temp_dir
 
+	$placeholders = {}
+
 end
 
 After do
@@ -24,6 +26,20 @@ Given /^a file "(.+)":$/ do
 	dir_name = File.dirname file_name
 
 	FileUtils.mkdir_p dir_name
+
+	regex_str =
+		$placeholders.keys.map {
+			|key|
+			Regexp.quote key
+		}.join("|")
+
+	regex =
+		Regexp.new regex_str
+
+	file_contents =
+		file_contents.gsub(regex) {
+			|key| $placeholders[key]
+		}
 
 	File.open file_name, "w" do
 		|file_io|

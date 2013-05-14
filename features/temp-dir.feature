@@ -11,6 +11,9 @@ Feature: Temporary directory and files
 
     Given a file "features/support/steps.rb":
       """
+      Before do
+        $placeholders["${name}"] = "world"
+      end
       Then /^the file is created correctly$/ do
         File.read("abc.def").should == "Hello world"
       end
@@ -19,10 +22,16 @@ Feature: Temporary directory and files
     And a file "features/test.feature":
       """
       Feature:
-        Scenario:
+        Scenario: Simple file
           Given a file "abc.def":
             \"\"\"
             Hello world
+            \"\"\"
+          Then the file is created correctly
+        Scenario: Placeholders
+          Given a file "abc.def":
+            \"\"\"
+            Hello ${name}
             \"\"\"
           Then the file is created correctly
       """
@@ -32,8 +41,8 @@ Feature: Temporary directory and files
     Then the exit status should be 0
     And the output should contain:
       """
-      1 scenario (1 passed)
-      2 steps (2 passed)
+      2 scenarios (2 passed)
+      4 steps (4 passed)
       """
 
   Scenario: Create a directory
