@@ -54,6 +54,12 @@ puts "pushing to rubygems"
 shell "gem build #{project}.gemspec"
 shell "gem push #{project}-#{ver}.gem"
 
+if project == "hq-dev"
+	puts ""
+	puts "installing gem"
+	shell "gem install hq-dev -v #{ver}"
+end
+
 puts ""
 puts "done!"
 puts ""
