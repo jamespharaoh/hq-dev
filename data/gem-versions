@@ -4,6 +4,7 @@ capybara 2.0.2
 cucumber 1.3.1
 hq-dev 0.0.15
 hq-engine 0.0.3
+hq-logger 0.0.1
 hq-tools 0.8.0
 hq-web 0.0.2
 json 1.7.7
