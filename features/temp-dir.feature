@@ -14,9 +14,6 @@ Feature: Temporary directory and files
       Before do
         $placeholders["${name}"] = "world"
       end
-      Then /^the file is created correctly$/ do
-        File.read("abc.def").should == "Hello world"
-      end
       """
 
     And a file "features/test.feature":
@@ -27,13 +24,19 @@ Feature: Temporary directory and files
             \"\"\"
             Hello world
             \"\"\"
-          Then the file is created correctly
+          Then there should be a file "abc.def":
+            \"\"\"
+            Hello world
+            \"\"\"
         Scenario: Placeholders
           Given a file "abc.def":
             \"\"\"
             Hello ${name}
             \"\"\"
-          Then the file is created correctly
+          Then there should be a file "abc.def":
+            \"\"\"
+            Hello world
+            \"\"\"
       """
 
     When I run "cucumber"

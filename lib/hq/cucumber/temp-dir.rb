@@ -56,3 +56,14 @@ Given /^a directory "(.+)"$/ do
 	Dir.mkdir dir_name
 
 end
+
+Then /^there should be a file "(.+)":$/ do
+	|file_name, file_contents_expect|
+
+	file_contents_actual =
+		File.read file_name
+
+	file_contents_actual.strip.should ==
+		file_contents_expect.strip
+
+end
