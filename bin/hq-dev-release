@@ -4,6 +4,7 @@ require "fileutils"
 
 project = File.basename(Dir.pwd)
 ver = ARGV[0]
+offline = ARGV[1] == "--offline"
 
 def shell cmd
 	success = system cmd
@@ -37,7 +38,11 @@ end
 
 puts ""
 puts "running bundle update"
-shell "bundle update"
+if offline
+	shell "bundle update --local"
+else
+	shell "bundle update"
+end
 
 puts ""
 puts "committing changes"
@@ -49,17 +54,21 @@ shell "git commit -m 'bump version number to #{ver}'"
 puts ""
 puts "pushing to github"
 shell "git tag #{ver}"
-shell "git push origin master #{ver}"
+shell "git push origin master #{ver}" unless offline
 
 puts ""
 puts "pushing to rubygems"
 shell "gem build #{project}.gemspec"
-shell "gem push #{project}-#{ver}.gem"
+shell "gem push #{project}-#{ver}.gem" unless offline
 
-if project == "hq-dev"
+puts ""
+puts "installing gem"
+shell "gem install #{project}-#{ver}.gem"
+
+if offline
 	puts ""
-	puts "installing gem"
-	shell "gem install hq-dev -v #{ver}"
+	puts "recording offline release"
+	system "echo offline release #{project} #{ver} | mail james@phsys.co.uk"
 end
 
 puts ""
