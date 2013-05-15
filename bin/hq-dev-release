@@ -6,6 +6,11 @@ project = File.basename(Dir.pwd)
 ver = ARGV[0]
 offline = ARGV[1] == "--offline"
 
+def announce message
+	puts ""
+	puts message
+end
+
 def shell cmd
 	success = system cmd
 	exit 1 unless success
@@ -13,13 +18,16 @@ end
 
 # TODO check the workspace is clean
 
-puts ""
-puts "running tests"
+# TODO run bundle update and commit any changes
+
+announce "running tests"
+
 shell "bundle exec rake"
 
-puts ""
-puts "bumping version number"
+announce "bumping version number"
+
 shell "echo #{ver} > etc/hq-dev/version"
+
 if File.exist? "data/gem-versions"
 	File.open "data/gem-versions.new", "w" do
 		|file_io|
@@ -36,33 +44,34 @@ if File.exist? "data/gem-versions"
 	FileUtils.mv "data/gem-versions.new", "data/gem-versions"
 end
 
-puts ""
-puts "running bundle update"
-if offline
-	shell "bundle update --local"
-else
-	shell "bundle update"
-end
+announce "running bundle update"
 
-puts ""
-puts "committing changes"
+shell "bundle update" unless offline
+shell "bundle update --local" if offline
+
+announce "committing changes"
+
 shell "git add -A"
 shell "git diff --cached"
+
 sleep 2
+
 shell "git commit -m 'bump version number to #{ver}'"
 
-puts ""
-puts "pushing to github"
+announce "pushing to github" unless offline
+announce "commit to local git" if offline
+
 shell "git tag #{ver}"
 shell "git push origin master #{ver}" unless offline
 
-puts ""
-puts "pushing to rubygems"
+announce "pushing to rubygems" unless offline
+announce "building gem" if offline
+
 shell "gem build #{project}.gemspec"
 shell "gem push #{project}-#{ver}.gem" unless offline
 
-puts ""
-puts "installing gem"
+announce "installing gem"
+
 shell "gem install #{project}-#{ver}.gem"
 
 if offline
