@@ -1,6 +1,7 @@
 /.bundle
 /.gems
 /.stubs
+/doc
 /results
 /test-configs
 /*.gem
