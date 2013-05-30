@@ -1,3 +1,4 @@
+@temp-dir
 Feature: Command invocation
 
   Background:
@@ -22,6 +23,7 @@ Feature: Command invocation
 
     Given a file "features/test.feature":
       """
+      @temp-dir
       Feature:
         Scenario: Invoke script
           Given a file "args":
@@ -54,6 +56,7 @@ Feature: Command invocation
 
     Given a file "features/test.feature":
       """
+      @temp-dir
       Feature:
         Scenario: Run script
           Given a file "command":

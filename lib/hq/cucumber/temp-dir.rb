@@ -1,9 +1,9 @@
 require "fileutils"
 require "tmpdir"
 
-Before do
+Before "@temp-dir" do
 
-	@old_dir = Dir.pwd
+	@project_dir = Dir.pwd
 	@temp_dir = Dir.mktmpdir
 
 	Dir.chdir @temp_dir
@@ -12,16 +12,24 @@ Before do
 
 end
 
-After do
+After "@temp-dir" do
 
-	FileUtils.remove_entry_secure @temp_dir
+	Dir.chdir @project_dir
 
-	Dir.chdir @old_dir
+	if $temp_dir_use_sudo
+		system "sudo rm -rf #{@temp_dir}"
+	else
+		FileUtils.remove_entry_secure @temp_dir
+	end
+
+	@temp_dir = nil
 
 end
 
 Given /^a file "(.+)":$/ do
 	|file_name, file_contents|
+
+	raise "Must use @temp-dir tag" unless @temp_dir
 
 	dir_name = File.dirname file_name
 
@@ -53,12 +61,16 @@ end
 Given /^a directory "(.+)"$/ do
 	|dir_name|
 
+	raise "Must use @temp-dir tag" unless @temp_dir
+
 	Dir.mkdir dir_name
 
 end
 
 Then /^there should be a file "(.+)":$/ do
 	|file_name, file_contents_expect|
+
+	raise "Must use @temp-dir tag" unless @temp_dir
 
 	file_contents_actual =
 		File.read file_name

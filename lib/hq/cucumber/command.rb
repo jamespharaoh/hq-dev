@@ -26,6 +26,12 @@ end
 When /^I run "([^"]+)"$/ do
 	|command_str|
 
+	command_run command_str
+
+end
+
+def command_run command_str
+
 	stdout_temp =
 		Tempfile.new "cuke-command-stdout-"
 
@@ -58,10 +64,24 @@ Then /^the command stdout should be:$/ do
 
 end
 
+Then /^the command stdout should include:$/ do
+	|stdout_expect|
+
+	@command_stdout.strip.should include stdout_expect.strip
+
+end
+
 Then /^the command stderr should be:$/ do
 	|stderr_expect|
 
 	@command_stderr.strip.should == stderr_expect.strip
+
+end
+
+Then /^the command stderr should include:$/ do
+	|stderr_expect|
+
+	@command_stderr.strip.should include stderr_expect.strip
 
 end
 
@@ -74,3 +94,8 @@ Then /^the command exit status should be (\d+)$/ do
 
 end
 
+Then /^the command exit status should be non-zero$/ do
+
+	@command_exit_status.should_not == 0
+
+end

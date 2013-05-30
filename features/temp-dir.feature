@@ -1,3 +1,4 @@
+@temp-dir
 Feature: Temporary directory and files
 
   Background:
@@ -18,6 +19,7 @@ Feature: Temporary directory and files
 
     And a file "features/test.feature":
       """
+      @temp-dir
       Feature:
         Scenario: Simple file
           Given a file "abc.def":
@@ -62,6 +64,7 @@ Feature: Temporary directory and files
 
     And a file "features/test.feature":
       """
+      @temp-dir
       Feature:
         Scenario: Create dir
           Given a directory "some-dir"
