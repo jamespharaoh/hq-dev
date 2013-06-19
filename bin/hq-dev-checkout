@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+PROJECTS_DIR = File.expand_path "."
+DEV_DIR = File.expand_path "../..", __FILE__
+
+project_names = File.read("#{DEV_DIR}/data/hq-projects").split("\n")
+
+project_names.each do
+	|project_name|
+
+	git_repo = "git@github.com:jamespharaoh/#{project_name}.git"
+
+	if Dir.exist? project_name
+		puts "#{project_name} already exists"
+	else
+		puts "cloning #{git_repo}"
+		system "git clone #{git_repo} #{project_name}" \
+			or raise "error"
+	end
+
+end
